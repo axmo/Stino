@@ -65,6 +65,22 @@ class ShowArduinoMenuCommand(sublime_plugin.WindowCommand):
 		state = app.constant.global_settings.get('show_arduino_menu', True)
 		return state
 
+class NewSketchCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		caption = app.i18n.translate('Name for New Sketch')
+		self.window.show_input_panel(caption, '', self.on_done, None, None)
+
+	def on_done(self, input_text):
+		sketch_name = input_text
+		if sketch_name:
+			sketch_file = app.base.newSketch(sketch_name)
+			if sketch_file:
+				self.window.open_file(sketch_file)
+				app.arduino_info.refresh()
+				app.main_menu.refresh()
+			else:
+				app.output_console.printText('A sketch (or folder) named "%s" already exists. Could not create the sketch.\n' % sketch_name)
+
 class OpenSketchCommand(sublime_plugin.WindowCommand):
 	def run(self, folder):
 		app.sketch.openSketchFolder(folder)
@@ -74,6 +90,18 @@ class ImportLibraryCommand(sublime_plugin.WindowCommand):
 		view = app.active_file.getView()
 		self.window.active_view().run_command('save')
 		app.sketch.importLibrary(view, folder)
+
+	def is_enabled(self):
+		state = False
+		if app.active_file.isSrcFile():
+			state = True
+		return state
+
+class ShowSketchFolderCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		folder = app.active_file.getFolder()
+		url = 'file://' + folder
+		sublime.run_command('open_url', {'url': url})
 
 	def is_enabled(self):
 		state = False
@@ -151,7 +179,9 @@ class UploadUsingProgrammerCommand(sublime_plugin.WindowCommand):
 
 class ChooseBoardCommand(sublime_plugin.WindowCommand):
 	def run(self, platform, board):
+		cur_platform = app.arduino_info.getPlatformList()[platform]
 		app.constant.sketch_settings.set('platform', platform)
+		app.constant.sketch_settings.set('platform_name', cur_platform.getName())
 		app.constant.sketch_settings.set('board', board)
 		app.main_menu.refresh()
 		app.constant.sketch_settings.set('full_compilation', True)
@@ -561,6 +591,16 @@ class ShowUploadOutputCommand(sublime_plugin.WindowCommand):
 		state = app.constant.sketch_settings.get('show_upload_output', False)
 		return state
 
+class VerifyCodeCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		verify_code = not app.constant.sketch_settings.get('verify_code', False)
+		app.constant.sketch_settings.set('verify_code', verify_code)
+
+	def is_checked(self):
+		state = app.constant.sketch_settings.get('verify_code', False)
+		return state
+
+
 class OpenRefCommand(sublime_plugin.WindowCommand):
 	def run(self, url):
 		url = app.base.getUrl(url)
@@ -589,7 +629,7 @@ class FindInReferenceCommand(sublime_plugin.WindowCommand):
 
 class AboutStinoCommand(sublime_plugin.WindowCommand):
 	def run(self):
-		print('About Stino')
+		sublime.run_command('open_url', {'url': 'https://github.com/Robot-Will/Stino'})
 
 class PanelOutputCommand(sublime_plugin.TextCommand):
 	def run(self, edit, text):

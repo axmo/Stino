@@ -394,9 +394,14 @@ def buildReferenceMenu(language):
 	return references_menu	
 
 def buildSketchMenuGroup(language, arduino_info):
+	new_sketch_menu = MenuItem(language.translate('New Sketch'))
+	new_sketch_menu.setCommand('new_sketch')
+
 	sketch_menu_group = MenuItemGroup()
 	sketchbook_menu = buildSketchbookMenu(language, arduino_info)
 	examples_menu = buildExampleMenu(language, arduino_info)
+
+	sketch_menu_group.addMenuItem(new_sketch_menu)
 	sketch_menu_group.addMenuItem(sketchbook_menu)
 	sketch_menu_group.addMenuItem(examples_menu)
 	return sketch_menu_group
@@ -404,7 +409,11 @@ def buildSketchMenuGroup(language, arduino_info):
 def buildLibraryMenuGroup(language, arduino_info):
 	library_menu_group = MenuItemGroup()
 	import_lib_menu = buildLibraryMenu(language, arduino_info)
+
+	show_sketch_folder_menu = MenuItem(language.translate('Show Sketch Folder'))
+	show_sketch_folder_menu.setCommand('show_sketch_folder')
 	library_menu_group.addMenuItem(import_lib_menu)
+	library_menu_group.addMenuItem(show_sketch_folder_menu)
 	return library_menu_group
 
 def buildDebugMenuGroup(language):
@@ -486,11 +495,16 @@ def buildSettingMenuGroup(language):
 	show_upload_menu.setCheckbox()
 	show_verbose_output_menu.addMenuItem(show_compilation_menu)
 	show_verbose_output_menu.addMenuItem(show_upload_menu)
+
+	verify_code_menu = MenuItem(language.translate('Verify Code after Upload'))
+	verify_code_menu.setCommand('verify_code')
+	verify_code_menu.setCheckbox()
 	
 	setting_menu_group.addMenuItem(setting_menu)
 	setting_menu_group.addMenuItem(global_setting_menu)
 	setting_menu_group.addMenuItem(full_compilation_menu)
 	setting_menu_group.addMenuItem(show_verbose_output_menu)
+	setting_menu_group.addMenuItem(verify_code_menu)
 	return setting_menu_group
 
 def buildHelpMenuGroup(language):

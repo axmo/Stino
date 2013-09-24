@@ -161,7 +161,10 @@ def getChosenArgs(arduino_info):
 		platform_id = constant.sketch_settings.get('platform', -1)
 		if not ((platform_id > 0) and (platform_id < len(platform_list))):
 			platform_id = 1
+			cur_platform = platform_list[platform_id]
+			platform_name = cur_platform.getName()
 			constant.sketch_settings.set('platform', platform_id)
+			constant.sketch_settings.set('platform_name', platform_name)
 		selected_platform = platform_list[platform_id]
 		board_list = selected_platform.getBoardList()
 		board_id = constant.sketch_settings.get('board', -1)
@@ -221,6 +224,8 @@ def getChosenArgs(arduino_info):
 				programmer_args = programmer.getArgs()
 				args.update(programmer_args)
 
+			platform_file = getPlatformFile(arduino_info)
+			args = addBuildUsbValue(args, platform_file)
 			args = replaceAllDictValue(args)
 
 			if not 'upload.maximum_ram_size' in args:
@@ -283,6 +288,26 @@ def replaceAllDictValue(args_dict):
 		value_text = replaceValueText(value_text, args_dict)
 		args_dict[key] = value_text
 	return args_dict
+
+def addBuildUsbValue(args, platform_file):
+	lines = fileutil.readFileLines(platform_file)
+	for line in lines:
+		line = line.strip()
+		if line and not '#' in line:
+			(key, value) = textutil.getKeyValue(line)
+			if 'extra_flags' in key:
+				continue
+			if 'build.' in key:
+				if 'usb_manufacturer' in key:
+					if not value:
+						value = 'unknown'
+				value = replaceValueText(value, args)
+
+				if constant.sys_platform == 'windows':
+					value = value.replace('"', '\\"')
+					value = value.replace('\'', '"')
+				args[key] = value
+	return args
 
 def getDefaultArgs(cur_project, arduino_info):
 	core_folder = getCoreFolder(arduino_info)
@@ -362,7 +387,10 @@ def getCoreFolder(arduino_info):
 	platform_id = constant.sketch_settings.get('platform', -1)
 	if not ((platform_id > 0) and (platform_id < len(platform_list))):
 		platform_id = 1
+		cur_platform = platform_list[platform_id]
+		platform_name = cur_platform.getName()
 		constant.sketch_settings.set('platform', platform_id)
+		constant.sketch_settings.set('platform_name', platform_name)
 	platform = platform_list[platform_id]
 	
 	core_folder = ''
@@ -383,9 +411,6 @@ def getPlatformFile(arduino_info):
 	return platform_file
 
 def splitPlatformFile(platform_file):
-	# opened_file = open(platform_file, 'r')
-	# text = opened_file.read()
-	# opened_file.close()
 	text = fileutil.readFile(platform_file)
 	index = text.index('recipe.')
 	text_header = text[:index]
@@ -417,6 +442,11 @@ def getPlatformArgs(platform_text, args):
 			if not show_upload_output:
 				if '.quiet' in key:
 					key = key.replace('.quiet', '.verbose')
+
+			if '.verbose' in key:
+				verify_code = constant.sketch_settings.get('verify_code', False)
+				if verify_code:
+					value += ' -V'
 
 			if key == 'build.extra_flags':
 				if key in args:
@@ -485,7 +515,7 @@ def getLibFolderListFromProject(cur_project, arduino_info):
 	selected_platform = platform_list[platform_id]
 	general_h_lib_dict = general_platform.getHLibDict()
 	selected_h_lib_dict = selected_platform.getHLibDict()
-
+	
 	ino_src_file_list = cur_project.getInoSrcFileList()
 	c_src_file_list = cur_project.getCSrcFileList()
 	h_list = preprocess.getHListFromSrcList(ino_src_file_list + c_src_file_list)
@@ -502,7 +532,7 @@ def getLibFolderListFromProject(cur_project, arduino_info):
 
 def genBuildCppFile(build_folder, cur_project, arduino_info):
 	project_name = cur_project.getName()
-	cpp_file_name = project_name + '.cpp'
+	cpp_file_name = project_name + '.ino.cpp'
 	cpp_file = os.path.join(build_folder, cpp_file_name)
 	ino_src_file_list = cur_project.getInoSrcFileList()
 	arduino_version = arduino_info.getVersion()
@@ -693,4 +723,7 @@ def formatCommand(command):
 			command = command.replace('/"', '"')
 			command = command.replace('/', os.path.sep)
 			command = '"' + command + '"'
+	if constant.sys_version < 3:
+		if isinstance(command, unicode):
+			command = command.encode(constant.sys_encoding)
 	return command

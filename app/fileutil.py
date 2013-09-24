@@ -48,6 +48,10 @@ def getDocumentFolder():
 	return document_folder
 
 def listDir(folder, with_files = True, with_dirs = True):
+	if sys_version < 3:
+		if not isinstance(folder, unicode):
+			folder = folder.decode(sys_encoding)
+
 	file_list = []
 	if os.path.isdir(folder):
 		try:
@@ -115,7 +119,6 @@ def getFolderNameList(folder_list):
 	if sys_version < 3:
 		new_list = []
 		for folder_name in folder_name_list:
-			folder_name = folder_name.decode(sys_encoding)
 			new_list.append(folder_name)
 		folder_name_list = new_list
 	return folder_name_list
@@ -133,10 +136,9 @@ def getFileListOfExt(folder, ext_list):
 def readFile(cur_file, encoding = 'utf-8'):
 	text = ''
 	if sys_version < 3:
-		opened_file = open(cur_file, 'r')
+		opened_file = codecs.open(cur_file, 'r', encoding = encoding)
 		text = opened_file.read()
 		opened_file.close()
-		text = text.decode(encoding)
 	else:
 		opened_file = open(cur_file, 'r', encoding = encoding)
 		text = opened_file.read()
@@ -150,9 +152,7 @@ def readFileLines(cur_file):
 
 def writeFile(cur_file, text, encoding = 'utf-8'):
 	if sys_version < 3:
-		# if not isinstance(text, unicode):
-		# 	text = text.encoding(encoding)
-		opened_file = open(cur_file, 'w')
+		opened_file = codecs.open(cur_file, 'w', encoding = encoding)
 		opened_file.write(text)
 		opened_file.close()
 	else:

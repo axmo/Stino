@@ -1,9 +1,9 @@
 ![Stino Logo](http://robot-will.github.com/Stino/images/logo.png)
 ![Stino](http://robot-will.github.com/Stino/images/stino.png)
 
-Stino is a [Sublime Text 2](http://www.sublimetext.com) plugin, which provides an [Arduino](http://arduino.cc)-like environement for editing, compiling and uploading sketches. The plugin was written by Robot Will in 2012-2013.
+Stino is a [Sublime Text](http://www.sublimetext.com) plugin, which provides an [Arduino](http://arduino.cc)-like environement for editing, compiling and uploading sketches. The plugin was written by Robot Will in 2012-2013.
 
-Sublime Text is a sophisticated text editor for code, markup and prose. You'll love the slick user interface, extraordinary features and amazing performance. Stino is a Sublime Text plugin, providing a menu and a command palette, which make it as easy as Arduino IDE to write code and upload it to the I/O board. The plugin was written in pure python, and it runs on Windows, Mac OS X, and Linux. Two additional python libraries, [Pyserial](https://pypi.python.org/pypi/pyserial) and [Chardet](https://pypi.python.org/pypi/chardet) were used in this plugin, these codes are belonging to their own authors.
+Sublime Text is a sophisticated text editor for code, markup and prose. You'll love the slick user interface, extraordinary features and amazing performance. Stino is a Sublime Text plugin, providing a menu and a command palette, which make it as easy as Arduino IDE to write code and upload it to the I/O board. The plugin was written in pure python, and it runs on Windows, Mac OS X, and Linux. A additional python libraries, [Pyserial](https://pypi.python.org/pypi/pyserial) is used in this plugin, the codes are belonging to their own authors.
 
 ## Requirements
 #### 1. [Sublime Text](http://www.sublimetext.com)
@@ -11,20 +11,21 @@ Current version supports ST2 and ST3. This version is done at 09/10/2013.
 
 #### 2. [Arduino](http://arduino.cc/en/Main/Software)
 Most Arduino versions are supported.
-
+ 
 #### 3. Tested OS
-* Windows: Windows 8, Windows 7
+* Windows: Windows 8, Windows 7, Windows XP 
 
-* Linux: Slax (7)
+* Linux: Ubuntu (13), Slax (7), Arch, ReactOS and SkyOS
 
-* Max OS X: Snow Leopard (10.6)
+* Max OS X: OSX 10.8, 10.7, Snow Leopard (10.6)
 
 If your OS is not listed, please see this [issue](https://github.com/Robot-Will/Stino/issues/18) and leave your OS information. Thanks.
 
 ## Installation
 Stino installation coulde be achieved through Sublime Text Package Control or manual installation.
 
-#### 1. Installation trough Sublime Text Package Control
+#### 1. Installation through Sublime Text Package Control
+
 1. Open [Sublime Text Package Control Installation Page](http://wbond.net/sublime_packages/package_control/installation), copy the installation command.
 
 2. Open Sublime Text console via Ctrl+` shorcut, and paste the installation command into the console.
@@ -126,6 +127,9 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## About The Author
+Dr. Robot Will is a chemist, not a programmer. He is in Shanghai, China, once a member of Xinchejian. He writes this plugin just for fun, meanwhile learning Python and Arduino. If you have any ideas or suggestions, please leave messages to him. He will appreciate your help.
 
 ## Website
 GitHub Page (http://robot-will.github.com/Stino/)
